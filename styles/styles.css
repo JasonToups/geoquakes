@@ -14,3 +14,20 @@
 body {
   background-color: rgb(198, 243, 245);
 }
+
+span {
+  font-weight: bold;
+  text-shadow: 1px 1px #000000;
+}
+
+.yellow {
+  color: rgb(238, 255, 0);
+}
+
+.orange {
+  color: rgb(255, 187, 0);
+}
+
+.red {
+  color: rgb(255, 0, 0);
+}
