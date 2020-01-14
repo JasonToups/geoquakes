@@ -17,6 +17,10 @@ const onSuccess = response => {
   initMap();
   const { features } = response;
   features.forEach(earthquake => {
+    console.log(earthquake);
+    const timeAgo = timeDiff(earthquake.properties.time);
+    console.log(timeAgo);
+
     const quakeName = earthquake.properties.title;
     const template = `<p>${quakeName}</p>`;
     $('#info').append(template);
@@ -43,7 +47,7 @@ $.ajax({
 const timeDiff = (then) => {
   let now = Date.now();
   let hrsAgo = (((now - then) / 1000) / 60) / 60;
-  console.log(hrsAgo);
+  return Math.round(hrsAgo);
 };
 
 
