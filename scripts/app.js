@@ -1,6 +1,10 @@
 // define globals
 var weekly_quakes_endpoint = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson";
 
+var monthly_quakes_endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
+
+var quakes_endpoint = [weekly_quakes_endpoint, monthly_quakes_endpoint];
+
 var image = {
   url: '/images/earthquake.png', // url
   scaledSize: new google.maps.Size(25, 25), // scaled size
@@ -50,7 +54,7 @@ const onError = (error, errorText, errorCode) => {
 
 $.ajax({
   method: 'GET',
-  url: weekly_quakes_endpoint,
+  url: quakes_endpoint[0],
   success: onSuccess,
   error: onError
 })
@@ -69,3 +73,19 @@ function initMap() {
     zoom: 2
   });
 }
+
+/* makeButtons works, but the buttons aren't centered in the row, and the buttons aren't hooked up to an event listener */
+const makeButtons = () => {
+  let buttons = `
+  <div class="row">
+    <div class="col-xs-12 col-md-6">
+      <button type="button" id="weekly">Weekly</button>
+    </div>
+    <div class="col-xs-12 col-md-6">
+      <button type="button" id="monthly">Monthly</button>
+    </div>
+  </div>`;
+  $('#info').prepend(buttons);
+}
+
+makeButtons();

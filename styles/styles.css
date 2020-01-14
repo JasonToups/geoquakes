@@ -17,7 +17,7 @@ body {
 
 span {
   font-weight: bold;
-  text-shadow: 1px 1px #000000;
+  text-shadow: 1px 1px #494949;
 }
 
 .yellow {
@@ -30,4 +30,8 @@ span {
 
 .red {
   color: rgb(255, 0, 0);
+}
+
+buttons {
+  align-items: center;
 }
