@@ -34,18 +34,9 @@ const onSuccess = response => {
     }
 
 
-    const quakeName = earthquake.properties.title;
-    /* 
-    Refactor this to work with quakeName
-    let title = "M 4.2 - 1km ESE of Fontana, California";
+    const title = earthquake.properties.title;
+    let quakeName = title.split("of ")[1];
 
-const splitTitle = (title) => {
- let output = title.split("of ");
- return output;
- console.log(output);
-}
-console.log(splitTitle(title)[1]);
-     */
     const template = `<p>${magDot} ${quakeName}</span>, ${hoursAgo} hours ago</p>`;
     $('#info').append(template);
 
