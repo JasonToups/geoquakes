@@ -5,6 +5,8 @@ var monthly_quakes_endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0
 
 var quakes_endpoint = [weekly_quakes_endpoint, monthly_quakes_endpoint];
 
+var sfLatLng = (37.7749, 122.4194);
+
 var image = {
   url: 'images/earthquakeIcon-red.svg', // url
   scaledSize: new google.maps.Size(26, 26), // scaled size
