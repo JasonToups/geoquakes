@@ -7,9 +7,9 @@ var quakes_endpoint = [weekly_quakes_endpoint, monthly_quakes_endpoint];
 
 var image = {
   url: 'images/earthquakeIcon-red.svg', // url
-  scaledSize: new google.maps.Size(25, 25), // scaled size
+  scaledSize: new google.maps.Size(26, 26), // scaled size
   origin: new google.maps.Point(0, 0), // origin
-  anchor: new google.maps.Point(0, 0) // anchor
+  anchor: new google.maps.Point(0, 13) // anchor
 };
 
 $(document).ready(function () {
