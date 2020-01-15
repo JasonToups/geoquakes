@@ -6,7 +6,7 @@ var monthly_quakes_endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0
 var quakes_endpoint = [weekly_quakes_endpoint, monthly_quakes_endpoint];
 
 var image = {
-  url: '/public/images/earthquake.png', // url
+  url: 'images/earthquake.png', // url
   scaledSize: new google.maps.Size(25, 25), // scaled size
   origin: new google.maps.Point(0, 0), // origin
   anchor: new google.maps.Point(0, 0) // anchor
