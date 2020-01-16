@@ -39,7 +39,7 @@ const onSuccess = response => {
     const title = earthquake.properties.title;
     let quakeName = title.split("of ")[1];
 
-    const template = `<p>${magDot} ${quakeName}</span>, ${hoursAgo} hours ago</p>`;
+    const template = `<p>${magDot}magnitude ${mag} ${quakeName}</span>, ${hoursAgo} hours ago</p>`;
     $('#info').append(template);
 
     const coords = earthquake.geometry.coordinates;
