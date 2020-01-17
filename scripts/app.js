@@ -39,19 +39,27 @@ $(document).ready(function () {
 const onSuccess = response => {
   initMap();
   quakes.response = response;
+
+  /* Finding the Maximum Magnitude & Minimum Magnitude */
+  for (let i = 0; i < quakes.response.features.length; i++) {
+    let currentQuake = quakes.response.features[i];
+    let currentQuakeMag = currentQuake.properties.mag;
+
+    if (currentQuakeMag < quakes.magMin) {
+      quakes.magMin = currentQuakeMag;
+    }
+    if (currentQuakeMag > quakes.magMax) {
+      quakes.magMax = currentQuakeMag;
+    }
+  }
+
   const { features } = response;
   features.forEach(earthquake => {
     // console.log(earthquake);
     const hoursAgo = timeDiff(earthquake.properties.time);
-    const mag = earthquake.properties.mag;
+    let mag = earthquake.properties.mag;
     let magDot = '';
 
-    if (mag < quakes.magMin) {
-      quakes.magMin = mag;
-    }
-    if (mag > quakes.magMax) {
-      quakes.magMax = mag;
-    }
 
     if (mag >= 4 && mag < 4.5) {
       magDot = '<span class=yellow>O</span>';
@@ -95,75 +103,6 @@ const onSuccess = response => {
 const onError = (error, errorText, errorCode) => {
   console.log({ error })
 };
-
-/*  Split this into a few functions */
-// First I need to find the max and min numbers for the magnitude
-// Then I need to loop through the quakes.response, and place the markers on the map
-// I need to rewrite the markers check, to put different colors on the markers.
-
-// const onSuccess = response => {
-//   initMap();
-//   quakes.response = response;
-// };
-
-// // const { features } = quakes.response;
-// quakes.response.features.forEach(earthquake => {
-//   // console.log(earthquake);
-//   const hoursAgo = timeDiff(earthquake.properties.time);
-//   const mag = earthquake.properties.mag;
-//   let magDot = '';
-
-//   if (mag < quakes.magMin) {
-//     quakes.magMin = mag;
-//   }
-//   if (mag > quakes.magMax) {
-//     quakes.magMax = mag;
-//   }
-
-//   if (mag >= 4 && mag < 4.5) {
-//     magDot = '<span class=yellow>O</span>';
-//     image.url = 'images/earthquakeIcon-purple.svg'
-//   } else if (mag >= 4.5 && mag < 5) {
-//     magDot = '<span class=yellow>O</span>';
-//     image.url = 'images/earthquakeIcon-blue.svg'
-//   } else if (mag >= 5 && mag < 5.5) {
-//     magDot = '<span class=orange>O</span>';
-//     image.url = 'images/earthquakeIcon-yellow.svg'
-//   } else if (mag >= 5.5 && mag < 6) {
-//     magDot = '<span class=orange>O</span>';
-//     image.url = 'images/earthquakeIcon-orange.svg'
-//   } else if (mag >= 6) {
-//     magDot = '<span class=red>O</span>';
-//     image.url = 'images/earthquakeIcon-red.svg'
-//   }
-
-//   const place = earthquake.properties.place;
-//   /* This doesn't entirely work, can't figure out how to split the titles to account for all the inconsistent formatting in the feed */
-//   // let quakeName = title.split(" ");
-//   // let quakeNameSlice = quakeName.slice(3, quakeName.length).join(" ");
-
-//   // if (quakeNameSlice.length === 0) {
-//   //   quakeNameSlice = title;
-//   // }
-
-//   const template = `<p>${mag} ${magDot} ${place}</span>, ${hoursAgo} hours ago</p>`;
-//   $('#info').append(template);
-
-//   const coords = earthquake.geometry.coordinates;
-//   // console.log(coords);
-//   const latLng = new google.maps.LatLng(coords[1], coords[0]);
-//   const marker = new google.maps.Marker({
-//     position: latLng,
-//     map: map,
-//     icon: image,
-//   });
-// });
-
-// const onError = (error, errorText, errorCode) => {
-//   console.log({ error })
-// };
-
-/* -------End of refactor -------- */
 
 $.ajax({
   method: 'GET',
