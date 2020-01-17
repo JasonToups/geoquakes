@@ -39,19 +39,8 @@ $(document).ready(function () {
 const onSuccess = response => {
   initMap();
   quakes.response = response;
+  magMaxMin();
 
-  /* Finding the Maximum Magnitude & Minimum Magnitude */
-  for (let i = 0; i < quakes.response.features.length; i++) {
-    let currentQuake = quakes.response.features[i];
-    let currentQuakeMag = currentQuake.properties.mag;
-
-    if (currentQuakeMag < quakes.magMin) {
-      quakes.magMin = currentQuakeMag;
-    }
-    if (currentQuakeMag > quakes.magMax) {
-      quakes.magMax = currentQuakeMag;
-    }
-  }
 
   const { features } = response;
   features.forEach(earthquake => {
@@ -60,20 +49,27 @@ const onSuccess = response => {
     let mag = earthquake.properties.mag;
     let magDot = '';
 
-
-    if (mag >= 4 && mag < 4.5) {
-      magDot = '<span class=yellow>O</span>';
+    let calc = ((quakes.magMax - quakes.magMin) / 6);
+    if (mag >= quakes.magMin && mag < quakes.magMin + (calc * 1)) {
+      magDot = '<span class=purple>O</span>';
+      // console.log(mag);
       image.url = 'images/earthquakeIcon-purple.svg'
-    } else if (mag >= 4.5 && mag < 5) {
-      magDot = '<span class=yellow>O</span>';
+    } else if (mag >= quakes.magMin + (calc * 1) && mag < quakes.magMin + (calc * 2)) {
+      magDot = '<span class=blue>O</span>';
+      // console.log(mag);
+      console.log(calc * 3);
       image.url = 'images/earthquakeIcon-blue.svg'
-    } else if (mag >= 5 && mag < 5.5) {
-      magDot = '<span class=orange>O</span>';
+    } else if (mag >= quakes.magMin + (calc * 2) && mag < quakes.magMin + (calc * 3)) {
+      magDot = '<span class=green>O</span>';
+      console.log(mag);
+      image.url = 'images/earthquakeIcon-green.svg'
+    } else if (mag >= quakes.magMin + (calc * 3) && mag < quakes.magMin + (calc * 4)) {
+      magDot = '<span class=yellow>O</span>';
       image.url = 'images/earthquakeIcon-yellow.svg'
-    } else if (mag >= 5.5 && mag < 6) {
+    } else if (mag >= quakes.magMin + (calc * 4) && mag < quakes.magMin + (calc * 5)) {
       magDot = '<span class=orange>O</span>';
       image.url = 'images/earthquakeIcon-orange.svg'
-    } else if (mag >= 6) {
+    } else if (mag >= quakes.magMin + (calc * 5) && mag <= quakes.magMax) {
       magDot = '<span class=red>O</span>';
       image.url = 'images/earthquakeIcon-red.svg'
     }
@@ -110,6 +106,21 @@ $.ajax({
   success: onSuccess,
   error: onError
 })
+
+const magMaxMin = () => {
+  for (let i = 0; i < quakes.response.features.length; i++) {
+    let currentQuake = quakes.response.features[i];
+    let currentQuakeMag = currentQuake.properties.mag;
+
+    if (currentQuakeMag < quakes.magMin) {
+      quakes.magMin = currentQuakeMag;
+    }
+    if (currentQuakeMag > quakes.magMax) {
+      quakes.magMax = currentQuakeMag;
+    }
+  }
+  quakes.magDifference = quakes.magMax - quakes.magMin;
+}
 
 const timeDiff = (then) => {
   let now = Date.now();

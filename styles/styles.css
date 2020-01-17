@@ -20,6 +20,18 @@ span {
   text-shadow: 1px 1px #494949;
 }
 
+.purple {
+  color: rgb(124, 1, 206);
+}
+
+.blue {
+  color: rgb(2, 80, 226);
+}
+
+.green {
+  color: rgb(1, 197, 17);
+}
+
 .yellow {
   color: rgb(238, 255, 0);
 }
