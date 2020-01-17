@@ -22,13 +22,15 @@ const quakes = {
   sfLatLng: (37.7749, 122.4194),
   image: {
     url: 'images/earthquakeIcon-red.svg', // url
-    scaledSize: new google.maps.Size(200, 200), // scaled size
+    scaledSize: new google.maps.Size(36, 36), // scaled size
     origin: new google.maps.Point(0, 0), // origin
-    anchor: new google.maps.Point(0, 100) // anchor
+    anchor: new google.maps.Point(0, 18) // anchor
   },
   response: [],
 };
-/* TODO 2 - write a function that sorts the response array by magnitude */
+/* TODO 1 - Animate the pins dropping in  */
+/* TODO 2 - write a function that adds a unique ID to the response array */
+/* TODO 3 - write a function that sorts the response array by magnitude */
 
 $(document).ready(function () {
   // console.log("Let's get coding!");
@@ -36,16 +38,17 @@ $(document).ready(function () {
 });
 
 /* ORIGINAL - This works, somewhat */
-/* TODO 1 - Update the onSuccess function to invoke another function to drop pins according to the stored quake object response.*/
-// TODO - First - change the function from using the responce object for the loop to the stored responce in the quakes object
+/* TODO 4 - Update the onSuccess function to invoke another function to drop pins according to the stored quake object response.*/
+// TODO - First - have the quakes.reponse array sorted by time, and then by magnitude. Have the list sorted by time, and the pins dropped by mag.
 // TODO - Second - break the dropping pins into another function, then invoke it here
+// DONE - change the function from using the response object for the loop to the stored responce in the quakes object
 const onSuccess = response => {
   initMap();
   quakes.response = response;
   magMaxMin();
 
-
-  const { features } = response;
+  /* TODO Ask Dalton - What is this below {features} ? */
+  const { features } = quakes.response;
   features.forEach(earthquake => {
     // console.log(earthquake);
     const hoursAgo = timeDiff(earthquake.properties.time);
