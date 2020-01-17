@@ -28,7 +28,7 @@ const quakes = {
   },
   response: [],
 };
-
+/* TODO 2 - write a function that sorts the response array by magnitude */
 
 $(document).ready(function () {
   // console.log("Let's get coding!");
@@ -36,6 +36,9 @@ $(document).ready(function () {
 });
 
 /* ORIGINAL - This works, somewhat */
+/* TODO 1 - Update the onSuccess function to invoke another function to drop pins according to the stored quake object response.*/
+// TODO - First - change the function from using the responce object for the loop to the stored responce in the quakes object
+// TODO - Second - break the dropping pins into another function, then invoke it here
 const onSuccess = response => {
   initMap();
   quakes.response = response;
