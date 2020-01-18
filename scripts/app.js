@@ -47,7 +47,9 @@ const onSuccess = response => {
   quakes.response = response;
   magMaxMin();
 
-  /* TODO Ask Dalton - What is this below {features} ? */
+  /* {features} targets just the features in the object */
+  /* TODO breakout looping through the quakes.response into a separate function that's invoked during onSuccess */
+  /* TODO once the object looping has been broken out, then sort the object arrays by magnitude and date */
   const { features } = quakes.response;
   features.forEach(earthquake => {
     // console.log(earthquake);
