@@ -26,10 +26,11 @@ const quakes = {
     origin: new google.maps.Point(0, 0), // origin
     anchor: new google.maps.Point(0, 18) // anchor
   },
-  response: [],
+  sortDate: [],
+  sortMag: [],
 };
 /* TODO 1 - Animate the pins dropping in  */
-/* TODO 2 - write a function that adds a unique ID to the response array */
+/* TODO - write a function that adds a unique ID to the response array */
 /* TODO 3 - write a function that sorts the response array by magnitude */
 
 $(document).ready(function () {
@@ -37,22 +38,20 @@ $(document).ready(function () {
   // CODE IN HERE!
 });
 
-/* ORIGINAL - This works, somewhat */
-/* TODO 4 - Update the onSuccess function to invoke another function to drop pins according to the stored quake object response.*/
 // TODO - First - have the quakes.reponse array sorted by time, and then by magnitude. Have the list sorted by time, and the pins dropped by mag.
 // TODO - Second - break the dropping pins into another function, then invoke it here
 // DONE - change the function from using the response object for the loop to the stored responce in the quakes object
 const onSuccess = response => {
   initMap();
-  quakes.response = response;
+  quakes.sortDate = response;
   magMaxMin();
-
-  /* {features} targets just the features in the object */
-  /* TODO breakout looping through the quakes.response into a separate function that's invoked during onSuccess */
-  /* TODO once the object looping has been broken out, then sort the object arrays by magnitude and date */
-  const { features } = quakes.response;
+  createMarkers(quakes.sortDate);
+};
+/* TODO once the object looping has been broken out, then sort the object arrays by magnitude and date */
+const createMarkers = (array) => {
+  // {features} targets just the features in the object
+  const { features } = array;
   features.forEach(earthquake => {
-    // console.log(earthquake);
     const hoursAgo = timeDiff(earthquake.properties.time);
     let mag = earthquake.properties.mag;
     let magDot = '';
@@ -103,7 +102,8 @@ const onSuccess = response => {
       icon: image,
     });
   });
-};
+}
+
 const onError = (error, errorText, errorCode) => {
   console.log({ error })
 };
@@ -116,8 +116,8 @@ $.ajax({
 })
 
 const magMaxMin = () => {
-  for (let i = 0; i < quakes.response.features.length; i++) {
-    let currentQuake = quakes.response.features[i];
+  for (let i = 0; i < quakes.sortDate.features.length; i++) {
+    let currentQuake = quakes.sortDate.features[i];
     let currentQuakeMag = currentQuake.properties.mag;
 
     if (currentQuakeMag < quakes.magMin) {
