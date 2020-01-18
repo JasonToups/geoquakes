@@ -28,29 +28,34 @@ const quakes = {
   },
   sortDate: [],
   sortMag: [],
+  markers: [],
 };
 /* TODO 1 - Animate the pins dropping in  */
 /* TODO - write a function that adds a unique ID to the response array */
-/* TODO 3 - write a function that sorts the response array by magnitude */
 
 $(document).ready(function () {
   // console.log("Let's get coding!");
   // CODE IN HERE!
 });
 
-// TODO - First - have the quakes.reponse array sorted by time, and then by magnitude. Have the list sorted by time, and the pins dropped by mag.
-// TODO - Second - break the dropping pins into another function, then invoke it here
-// DONE - change the function from using the response object for the loop to the stored responce in the quakes object
 const onSuccess = response => {
   initMap();
   quakes.sortDate = response;
+  // quakes.sortMag = response;
   magMaxMin();
+  // sortMag();
   createMarkers(quakes.sortDate);
 };
-/* TODO once the object looping has been broken out, then sort the object arrays by magnitude and date */
+
+const sortMag = () => {
+  /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
+  quakes.sortMag = quakes.sortDate;
+  quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
+}
+
 const createMarkers = (array) => {
   // {features} targets just the features in the object
-  const { features } = array;
+  let { features } = array;
   features.forEach(earthquake => {
     const hoursAgo = timeDiff(earthquake.properties.time);
     let mag = earthquake.properties.mag;
@@ -82,13 +87,6 @@ const createMarkers = (array) => {
     }
 
     const place = earthquake.properties.place;
-    /* This doesn't entirely work, can't figure out how to split the titles to account for all the inconsistent formatting in the feed */
-    // let quakeName = title.split(" ");
-    // let quakeNameSlice = quakeName.slice(3, quakeName.length).join(" ");
-
-    // if (quakeNameSlice.length === 0) {
-    //   quakeNameSlice = title;
-    // }
 
     const template = `<p>${mag} ${magDot} ${place}</span>, ${hoursAgo} hours ago</p>`;
     $('#info').append(template);
@@ -96,13 +94,27 @@ const createMarkers = (array) => {
     const coords = earthquake.geometry.coordinates;
     // console.log(coords);
     const latLng = new google.maps.LatLng(coords[1], coords[0]);
+
+    /* I need to read the documentation on this. I think it's possible to get the markers to drop slowly, but I think I need to add the markers to an array, separate from the rest of this function */
+    /* This turned all the markers purple */
+    // window.setTimeout(function() {
+    //   quakes.markers.push(new google.maps.Marker({
+    //     position: latlng,
+    //     map: map,
+    //     icon: image,
+    //     animation: google.maps.Animation.DROP
+    //   }));
+    // }, 400);
+
     const marker = new google.maps.Marker({
       position: latLng,
       map: map,
+      animation: google.maps.Animation.DROP,
       icon: image,
     });
   });
 }
+
 
 const onError = (error, errorText, errorCode) => {
   console.log({ error })
