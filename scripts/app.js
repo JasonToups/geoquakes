@@ -13,7 +13,7 @@ let image = {
   origin: new google.maps.Point(0, 0), // origin
   anchor: new google.maps.Point(0, 18) // anchor
 };
-
+// TODO - refactor all code to use the quakes object
 const quakes = {
   magMin: 6,
   magMax: 0,
@@ -30,8 +30,9 @@ const quakes = {
   sortMag: [],
   markers: [],
 };
-/* TODO 1 - Animate the pins dropping in  */
+/* TODO - Animate the pins dropping in slowly */
 /* TODO - write a function that adds a unique ID to the response array */
+/* TODO - get the pins to be styled by CSS */
 
 $(document).ready(function () {
   // console.log("Let's get coding!");
@@ -53,6 +54,8 @@ const sortMag = () => {
   quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
 }
 
+// TODO - write sortData function to sort the response by date
+
 const createMarkers = (array) => {
   // {features} targets just the features in the object
   let { features } = array;
@@ -60,6 +63,8 @@ const createMarkers = (array) => {
     const hoursAgo = timeDiff(earthquake.properties.time);
     let mag = earthquake.properties.mag;
     let magDot = '';
+
+    /* TODO - get the pins to use mag as the z-index CSS property */
 
     let calc = ((quakes.magMax - quakes.magMin) / 6);
     if (mag >= quakes.magMin && mag < quakes.magMin + (calc * 1)) {
@@ -163,6 +168,8 @@ function initMap() {
 }
 
 /* makeButtons works, but the buttons aren't centered in the row, and the buttons aren't hooked up to an event listener */
+/* TODO - Add buttons to the DOM */
+/* TODO - Add event listener to the buttons to change between the date and mag sort functions */
 const makeButtons = () => {
   let buttons = `
   <div class="row">
