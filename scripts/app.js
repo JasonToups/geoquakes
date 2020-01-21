@@ -13,7 +13,7 @@ let image = {
   origin: new google.maps.Point(0, 0), // origin
   anchor: new google.maps.Point(0, 18) // anchor
 };
-
+// TODO - refactor all code to use the quakes object
 const quakes = {
   magMin: 6,
   magMax: 0,
@@ -26,36 +26,45 @@ const quakes = {
     origin: new google.maps.Point(0, 0), // origin
     anchor: new google.maps.Point(0, 18) // anchor
   },
-  response: [],
+  sortDate: [],
+  sortMag: [],
+  markers: [],
 };
-/* TODO 1 - Animate the pins dropping in  */
-/* TODO 2 - write a function that adds a unique ID to the response array */
-/* TODO 3 - write a function that sorts the response array by magnitude */
+/* TODO - Animate the pins dropping in slowly */
+/* TODO - write a function that adds a unique ID to the response array */
+/* TODO - get the pins to be styled by CSS */
 
 $(document).ready(function () {
   // console.log("Let's get coding!");
   // CODE IN HERE!
 });
 
-/* ORIGINAL - This works, somewhat */
-/* TODO 4 - Update the onSuccess function to invoke another function to drop pins according to the stored quake object response.*/
-// TODO - First - have the quakes.reponse array sorted by time, and then by magnitude. Have the list sorted by time, and the pins dropped by mag.
-// TODO - Second - break the dropping pins into another function, then invoke it here
-// DONE - change the function from using the response object for the loop to the stored responce in the quakes object
 const onSuccess = response => {
   initMap();
-  quakes.response = response;
+  quakes.sortDate = response;
+  // quakes.sortMag = response;
   magMaxMin();
+  // sortMag();
+  createMarkers(quakes.sortDate);
+};
 
-  /* {features} targets just the features in the object */
-  /* TODO breakout looping through the quakes.response into a separate function that's invoked during onSuccess */
-  /* TODO once the object looping has been broken out, then sort the object arrays by magnitude and date */
-  const { features } = quakes.response;
+const sortMag = () => {
+  /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
+  quakes.sortMag = quakes.sortDate;
+  quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
+}
+
+// TODO - write sortData function to sort the response by date
+
+const createMarkers = (array) => {
+  // {features} targets just the features in the object
+  let { features } = array;
   features.forEach(earthquake => {
-    // console.log(earthquake);
     const hoursAgo = timeDiff(earthquake.properties.time);
     let mag = earthquake.properties.mag;
     let magDot = '';
+
+    /* TODO - get the pins to use mag as the z-index CSS property */
 
     let calc = ((quakes.magMax - quakes.magMin) / 6);
     if (mag >= quakes.magMin && mag < quakes.magMin + (calc * 1)) {
@@ -83,13 +92,6 @@ const onSuccess = response => {
     }
 
     const place = earthquake.properties.place;
-    /* This doesn't entirely work, can't figure out how to split the titles to account for all the inconsistent formatting in the feed */
-    // let quakeName = title.split(" ");
-    // let quakeNameSlice = quakeName.slice(3, quakeName.length).join(" ");
-
-    // if (quakeNameSlice.length === 0) {
-    //   quakeNameSlice = title;
-    // }
 
     const template = `<p>${mag} ${magDot} ${place}</span>, ${hoursAgo} hours ago</p>`;
     $('#info').append(template);
@@ -97,13 +99,28 @@ const onSuccess = response => {
     const coords = earthquake.geometry.coordinates;
     // console.log(coords);
     const latLng = new google.maps.LatLng(coords[1], coords[0]);
+
+    /* I need to read the documentation on this. I think it's possible to get the markers to drop slowly, but I think I need to add the markers to an array, separate from the rest of this function */
+    /* This turned all the markers purple */
+    // window.setTimeout(function() {
+    //   quakes.markers.push(new google.maps.Marker({
+    //     position: latlng,
+    //     map: map,
+    //     icon: image,
+    //     animation: google.maps.Animation.DROP
+    //   }));
+    // }, 400);
+
     const marker = new google.maps.Marker({
       position: latLng,
       map: map,
+      animation: google.maps.Animation.DROP,
       icon: image,
     });
   });
-};
+}
+
+
 const onError = (error, errorText, errorCode) => {
   console.log({ error })
 };
@@ -116,8 +133,8 @@ $.ajax({
 })
 
 const magMaxMin = () => {
-  for (let i = 0; i < quakes.response.features.length; i++) {
-    let currentQuake = quakes.response.features[i];
+  for (let i = 0; i < quakes.sortDate.features.length; i++) {
+    let currentQuake = quakes.sortDate.features[i];
     let currentQuakeMag = currentQuake.properties.mag;
 
     if (currentQuakeMag < quakes.magMin) {
@@ -151,6 +168,8 @@ function initMap() {
 }
 
 /* makeButtons works, but the buttons aren't centered in the row, and the buttons aren't hooked up to an event listener */
+/* TODO - Add buttons to the DOM */
+/* TODO - Add event listener to the buttons to change between the date and mag sort functions */
 const makeButtons = () => {
   let buttons = `
   <div class="row">
