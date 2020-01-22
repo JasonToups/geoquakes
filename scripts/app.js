@@ -48,13 +48,23 @@ const onSuccess = response => {
   createMarkers(quakes.sortDate);
 };
 
+// TODO - write function that sorts the data by date and makes the markers
+
+// TODO - write function that sorts the data by magnitude and makes the markers
+
 const sortMag = () => {
   /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
   quakes.sortMag = quakes.sortDate;
   quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
 }
 
-// TODO - write sortData function to sort the response by date
+// TODO - write sortDate function to sort the response by date
+// TODO / TEST - wrote this on phone 
+const sortDate = () => {
+  /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
+  quakes.sortDate.features.sort((a, b) => (a.properties.date < b.properties.date) ? 1 : (a.properties.date === b.properties.date) ? ((a.size < b.size) ? 1 : -1) : -1)
+}
+
 
 const createMarkers = (array) => {
   // {features} targets just the features in the object
