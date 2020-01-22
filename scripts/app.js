@@ -40,41 +40,53 @@ $(document).ready(function () {
 });
 
 const onSuccess = response => {
-  initMap();
   quakes.sortDate = response;
+  initMap();
   // quakes.sortMag = response;
   magMaxMin();
   // sortMag();
   createMarkers(quakes.sortDate);
 };
 
-// TODO - write function that sorts the data by date and makes the markers
+const createMap = (array) => {
+  initMap();
+  // quakes.sortMag = response;
+  magMaxMin();
+  // sortMag();
+  createMarkers(array);
+}
 
-// TODO - write function that sorts the data by magnitude and makes the markers
+/* Removes List and Markers, then sorts data and creates map */
+const sortAllByMag = () => {
+  $('p').remove();
+  sortMag();
+  createMap(quakes.sortDate)
+}
+const sortAllByDate = () => {
+  $('p').remove();
+  sortDate();
+  createMap(quakes.sortDate)
+}
+
 
 const sortMag = () => {
-  /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
   quakes.sortMag = quakes.sortDate;
   quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
 }
 
-// TODO - write sortDate function to sort the response by date
-// TODO / TEST - wrote this on phone 
 const sortDate = () => {
-  /* TODO BUG - this sort function is sorting both sortMag & sortDate. I think it might have something to do with the onSuccess function */
-  quakes.sortDate.features.sort((a, b) => (a.properties.date < b.properties.date) ? 1 : (a.properties.date === b.properties.date) ? ((a.size < b.size) ? 1 : -1) : -1)
+  quakes.sortDate.features.sort((a, b) => (a.properties.time < b.properties.time) ? 1 : (a.properties.time === b.properties.time) ? ((a.size < b.size) ? 1 : -1) : -1)
 }
 
 
 const createMarkers = (array) => {
   // {features} targets just the features in the object
   let { features } = array;
+  let zIndexNum = features.length;
   features.forEach(earthquake => {
     const hoursAgo = timeDiff(earthquake.properties.time);
     let mag = earthquake.properties.mag;
     let magDot = '';
-
-    /* TODO - get the pins to use mag as the z-index CSS property */
 
     let calc = ((quakes.magMax - quakes.magMin) / 6);
     if (mag >= quakes.magMin && mag < quakes.magMin + (calc * 1)) {
@@ -84,11 +96,11 @@ const createMarkers = (array) => {
     } else if (mag >= quakes.magMin + (calc * 1) && mag < quakes.magMin + (calc * 2)) {
       magDot = '<span class=blue>O</span>';
       // console.log(mag);
-      console.log(calc * 3);
+      // console.log(calc * 3);
       image.url = 'images/earthquakeIcon-blue.svg'
     } else if (mag >= quakes.magMin + (calc * 2) && mag < quakes.magMin + (calc * 3)) {
       magDot = '<span class=green>O</span>';
-      console.log(mag);
+      // console.log(mag);
       image.url = 'images/earthquakeIcon-green.svg'
     } else if (mag >= quakes.magMin + (calc * 3) && mag < quakes.magMin + (calc * 4)) {
       magDot = '<span class=yellow>O</span>';
@@ -126,7 +138,10 @@ const createMarkers = (array) => {
       map: map,
       animation: google.maps.Animation.DROP,
       icon: image,
+      zIndex: zIndexNum
     });
+    // console.log(zIndexNum);
+    zIndexNum--
   });
 }
 
