@@ -19,6 +19,7 @@ const quakes = {
   magMax: 0,
   weeklyQuakesEndpoint: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson",
   monthlyQuakesEndpoint: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson',
+  currentQuakesEndpoint: '',
   sfLatLng: (37.7749, 122.4194),
   image: {
     url: 'images/earthquakeIcon-red.svg', // url
@@ -57,6 +58,9 @@ const createMap = (array) => {
 }
 
 /* Removes List and Markers, then sorts data and creates map */
+//TODO - refactor this to not initialize the map again  the markers should be removed
+// create function that removes the markers
+// create function that creates the map only  
 const sortAllByMag = () => {
   $('p').remove();
   sortMag();
@@ -150,6 +154,7 @@ const onError = (error, errorText, errorCode) => {
   console.log({ error })
 };
 
+//TODO - refactor this to use the quakes.currentQuakesEndpoint
 $.ajax({
   method: 'GET',
   url: quakes_endpoint[0],
