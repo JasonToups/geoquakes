@@ -197,20 +197,16 @@ function initMap() {
 
 }
 
-/* makeButtons works, but the buttons aren't centered in the row, and the buttons aren't hooked up to an event listener */
-/* TODO - Add buttons to the DOM */
-/* TODO - Add event listener to the buttons to change between the date and mag sort functions */
-const makeButtons = () => {
-  let buttons = `
-  <div class="row">
-    <div class="col-xs-12 col-md-6">
-      <button type="button" id="weekly">Weekly</button>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <button type="button" id="monthly">Monthly</button>
-    </div>
-  </div>`;
-  $('#info').prepend(buttons);
-}
+/* ---- Event Listeners for Buttons ---- */
+// Sorting
+$('#magnitude').on('click', function () {
+  console.log('Sorted by magnitude');
+  sortAllByMag();
+});
 
-makeButtons();
+$('#date').on('click', function () {
+  console.log('Sorted by date');
+  sortAllByDate();
+});
+
+// Endpoints
