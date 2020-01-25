@@ -17,9 +17,9 @@ let image = {
 const quakes = {
   magMin: 6,
   magMax: 0,
-  weeklyQuakesEndpoint: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson",
+  weeklyQuakesEndpoint: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson',
   monthlyQuakesEndpoint: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson',
-  currentQuakesEndpoint: '',
+  currentQuakesEndpoint: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson',
   sfLatLng: (37.7749, 122.4194),
   image: {
     url: 'images/earthquakeIcon-red.svg', // url
@@ -39,15 +39,6 @@ $(document).ready(function () {
   // console.log("Let's get coding!");
   // CODE IN HERE!
 });
-
-const onSuccess = response => {
-  quakes.sortDate = response;
-  initMap();
-  // quakes.sortMag = response;
-  magMaxMin();
-  // sortMag();
-  createMarkers(quakes.sortDate);
-};
 
 const createMap = (array) => {
   initMap();
@@ -149,6 +140,14 @@ const createMarkers = (array) => {
   });
 }
 
+const onSuccess = response => {
+  quakes.sortDate = response;
+  initMap();
+  // quakes.sortMag = response;
+  magMaxMin();
+  // sortMag();
+  createMarkers(quakes.sortDate);
+};
 
 const onError = (error, errorText, errorCode) => {
   console.log({ error })
@@ -157,7 +156,7 @@ const onError = (error, errorText, errorCode) => {
 //TODO - refactor this to use the quakes.currentQuakesEndpoint
 $.ajax({
   method: 'GET',
-  url: quakes_endpoint[0],
+  url: quakes.currentQuakesEndpoint,
   success: onSuccess,
   error: onError
 })
@@ -188,7 +187,7 @@ function initMap() {
   let sanFrancisco = { lat: 37.78, lng: -122.44 };
   map = new google.maps.Map(document.getElementById('map'), {
     center: sanFrancisco,
-    zoom: 2
+    zoom: 1.2
   });
   marker = new google.maps.Marker({
     position: sanFrancisco,
@@ -197,20 +196,39 @@ function initMap() {
 
 }
 
-/* makeButtons works, but the buttons aren't centered in the row, and the buttons aren't hooked up to an event listener */
-/* TODO - Add buttons to the DOM */
-/* TODO - Add event listener to the buttons to change between the date and mag sort functions */
-const makeButtons = () => {
-  let buttons = `
-  <div class="row">
-    <div class="col-xs-12 col-md-6">
-      <button type="button" id="weekly">Weekly</button>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <button type="button" id="monthly">Monthly</button>
-    </div>
-  </div>`;
-  $('#info').prepend(buttons);
-}
+/* ---- Event Listeners for Buttons ---- */
+// Sorting
+$('#magnitude').on('click', function () {
+  console.log('Sorted by magnitude');
+  sortAllByMag();
+});
 
-makeButtons();
+$('#date').on('click', function () {
+  console.log('Sorted by date');
+  sortAllByDate();
+});
+
+// Endpoints
+$('#weekly').on('click', function () {
+  $('h1').text('Earthquakes from the past week:');
+  $('p').remove();
+  quakes.currentQuakesEndpoint = quakes.weeklyQuakesEndpoint;
+  $.ajax({
+    method: 'GET',
+    url: quakes.currentQuakesEndpoint,
+    success: onSuccess,
+    error: onError
+  })
+});
+
+$('#monthly').on('click', function () {
+  $('h1').text('Earthquakes from the past month:');
+  $('p').remove();
+  quakes.currentQuakesEndpoint = quakes.monthlyQuakesEndpoint;
+  $.ajax({
+    method: 'GET',
+    url: quakes.currentQuakesEndpoint,
+    success: onSuccess,
+    error: onError
+  })
+});
