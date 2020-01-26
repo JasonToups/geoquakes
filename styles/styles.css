@@ -53,9 +53,23 @@ h1 {
 }
 
 button {
-  width: 80px;
+  width: 90px;
   margin-top: 10px;
-  border-radius: 25px;
+  border-radius: 15px;
+  border-color: rgba(0, 0, 0, 0.2);
+  padding: 3px;
+}
+#date {
+  background-color: rgba(255, 138, 91, 1);
+}
+#magnitude {
+  background-color: rgba(234, 150, 165, 1);
+}
+#weekly {
+  background-color: rgba(187, 197, 170, 1);
+}
+#monthly {
+  background-color: rgba(37, 206, 209, 1);
 }
 
 .leftCol {
