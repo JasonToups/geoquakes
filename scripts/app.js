@@ -162,6 +162,8 @@ const onError = (error, errorText, errorCode) => {
 // });
 
 const magMaxMin = () => {
+  quakes.magMin = 6;
+  quakes.magMax = 0;
   for (let i = 0; i < quakes.sortDate.features.length; i++) {
     let currentQuake = quakes.sortDate.features[i];
     let currentQuakeMag = currentQuake.properties.mag;
