@@ -154,12 +154,12 @@ const onError = (error, errorText, errorCode) => {
 };
 
 //TODO - refactor this to use the quakes.currentQuakesEndpoint
-$.ajax({
-  method: 'GET',
-  url: quakes.currentQuakesEndpoint,
-  success: onSuccess,
-  error: onError
-})
+// $.ajax({
+//   method: 'GET',
+//   url: quakes.currentQuakesEndpoint,
+//   success: onSuccess,
+//   error: onError
+// });
 
 const magMaxMin = () => {
   for (let i = 0; i < quakes.sortDate.features.length; i++) {
@@ -208,27 +208,46 @@ $('#date').on('click', function () {
   sortAllByDate();
 });
 
-// Endpoints
-$('#weekly').on('click', function () {
-  $('h1').text('Earthquakes from the past week:');
-  $('p').remove();
+/* ---- Functions to Get Data From Endpoints ---- */
+function quakeWeek() {
   quakes.currentQuakesEndpoint = quakes.weeklyQuakesEndpoint;
   $.ajax({
     method: 'GET',
     url: quakes.currentQuakesEndpoint,
     success: onSuccess,
     error: onError
-  })
-});
-
-$('#monthly').on('click', function () {
-  $('h1').text('Earthquakes from the past month:');
+  });
+  $('h1').text(`Earthquakes from the past week, from magnitude ${quakes.magMin} to ${quakes.magMax}:`);
   $('p').remove();
+}
+
+function quakeMonth() {
   quakes.currentQuakesEndpoint = quakes.monthlyQuakesEndpoint;
   $.ajax({
     method: 'GET',
     url: quakes.currentQuakesEndpoint,
     success: onSuccess,
     error: onError
-  })
+  });
+  $('h1').text(`Major earthquakes from the past month:`);
+  $('p').remove();
+}
+
+// Endpoint Buttons
+$('#weekly').on('click', function () {
+  console.log('Switched to weekly endpoint');
+  quakeWeek();
 });
+
+$('#monthly').on('click', function () {
+  console.log('Switched to monthly endpoint');
+  quakeMonth();
+});
+
+$.ajax({
+  method: 'GET',
+  url: quakes.currentQuakesEndpoint,
+  success: quakeWeek,
+  error: onError
+});
+// quakeWeek();
