@@ -140,27 +140,7 @@ const createMarkers = (array) => {
   });
 }
 
-const onSuccess = response => {
-  quakes.sortDate = response;
-  initMap();
-  // quakes.sortMag = response;
-  magMaxMin();
-  // sortMag();
-  createMarkers(quakes.sortDate);
-};
-
-const onError = (error, errorText, errorCode) => {
-  console.log({ error })
-};
-
-//TODO - refactor this to use the quakes.currentQuakesEndpoint
-// $.ajax({
-//   method: 'GET',
-//   url: quakes.currentQuakesEndpoint,
-//   success: onSuccess,
-//   error: onError
-// });
-
+/* --- Find the Magnitude Max and Min of the Data ---- */
 const magMaxMin = () => {
   quakes.magMin = 6;
   quakes.magMax = 0;
@@ -178,11 +158,13 @@ const magMaxMin = () => {
   quakes.magDifference = quakes.magMax - quakes.magMin;
 }
 
+/* --- Find the time in hours --- */
 const timeDiff = (then) => {
   let now = Date.now();
   let hrsAgo = (((now - then) / 1000) / 60) / 60;
   return Math.round(hrsAgo);
 };
+
 
 var map;
 function initMap() {
@@ -198,6 +180,53 @@ function initMap() {
 
 }
 
+/* ---- Making Ajax Request From Endpoints ---- */
+function quakeWeek() {
+  quakes.currentQuakesEndpoint = quakes.weeklyQuakesEndpoint;
+  $.ajax({
+    method: 'GET',
+    url: quakes.currentQuakesEndpoint,
+    success: onSuccessWeek,
+    error: onError
+  });
+}
+
+function quakeMonth() {
+  quakes.currentQuakesEndpoint = quakes.monthlyQuakesEndpoint;
+  $.ajax({
+    method: 'GET',
+    url: quakes.currentQuakesEndpoint,
+    success: onSuccessMonth,
+    error: onError
+  });
+}
+
+/* --- After Making a successful Ajax Request ---*/
+const onSuccessWeek = response => {
+  quakes.sortDate = response;
+  initMap();
+  // quakes.sortMag = response;
+  magMaxMin();
+  $('h1').text(`Earthquakes from the past week, from magnitude ${quakes.magMin} to ${quakes.magMax}:`);
+  $('p').remove();
+  createMarkers(quakes.sortDate);
+};
+const onSuccessMonth = response => {
+  quakes.sortDate = response;
+  initMap();
+  // quakes.sortMag = response;
+  magMaxMin();
+  $('h1').text(`Major earthquakes from the past month:`);
+  $('p').remove();
+  createMarkers(quakes.sortDate);
+};
+
+/* --- Handles unsuccessful Ajax Request */
+const onError = (error, errorText, errorCode) => {
+  console.log({ error })
+};
+
+/* -------------- BUTTONS -------------- */
 /* ---- Event Listeners for Buttons ---- */
 // Sorting
 $('#magnitude').on('click', function () {
@@ -210,31 +239,6 @@ $('#date').on('click', function () {
   sortAllByDate();
 });
 
-/* ---- Functions to Get Data From Endpoints ---- */
-function quakeWeek() {
-  quakes.currentQuakesEndpoint = quakes.weeklyQuakesEndpoint;
-  $.ajax({
-    method: 'GET',
-    url: quakes.currentQuakesEndpoint,
-    success: onSuccess,
-    error: onError
-  });
-  $('h1').text(`Earthquakes from the past week, from magnitude ${quakes.magMin} to ${quakes.magMax}:`);
-  $('p').remove();
-}
-
-function quakeMonth() {
-  quakes.currentQuakesEndpoint = quakes.monthlyQuakesEndpoint;
-  $.ajax({
-    method: 'GET',
-    url: quakes.currentQuakesEndpoint,
-    success: onSuccess,
-    error: onError
-  });
-  $('h1').text(`Major earthquakes from the past month:`);
-  $('p').remove();
-}
-
 // Endpoint Buttons
 $('#weekly').on('click', function () {
   console.log('Switched to weekly endpoint');
@@ -246,10 +250,4 @@ $('#monthly').on('click', function () {
   quakeMonth();
 });
 
-$.ajax({
-  method: 'GET',
-  url: quakes.currentQuakesEndpoint,
-  success: quakeWeek,
-  error: onError
-});
-// quakeWeek();
+quakeWeek();
