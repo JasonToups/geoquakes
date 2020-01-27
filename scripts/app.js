@@ -1,4 +1,4 @@
-// define globals
+// TODO - When all of the code uses the quake object, delete globals
 let weekly_quakes_endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson';
 
 let monthly_quakes_endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson';
@@ -35,18 +35,10 @@ const quakes = {
 /* TODO - write a function that adds a unique ID to the response array */
 /* TODO - get the pins to be styled by CSS */
 
+/* TODO - Figure out why this is here. Maybe I can put the quakeweek in this, and drop it to the bottom of the document. */
 $(document).ready(function () {
-  // console.log("Let's get coding!");
-  // CODE IN HERE!
 });
 
-const createMap = (array) => {
-  initMap();
-  // quakes.sortMag = response;
-  magMaxMin();
-  // sortMag();
-  createMarkers(array);
-}
 
 /* Removes List and Markers, then sorts data and creates map */
 //TODO - refactor this to not initialize the map again  the markers should be removed
@@ -63,7 +55,6 @@ const sortAllByDate = () => {
   createMap(quakes.sortDate)
 }
 
-
 const sortMag = () => {
   quakes.sortMag = quakes.sortDate;
   quakes.sortMag.features.sort((a, b) => (a.properties.mag < b.properties.mag) ? 1 : (a.properties.mag === b.properties.mag) ? ((a.size < b.size) ? 1 : -1) : -1)
@@ -73,7 +64,14 @@ const sortDate = () => {
   quakes.sortDate.features.sort((a, b) => (a.properties.time < b.properties.time) ? 1 : (a.properties.time === b.properties.time) ? ((a.size < b.size) ? 1 : -1) : -1)
 }
 
+/* -- Initializes Map and Gets Max & Min Magnitude -- */
+const createMap = (array) => {
+  initMap();
+  magMaxMin();
+  createMarkers(array);
+}
 
+/* -- Creates Markers and Paragraph List of Data --- */
 const createMarkers = (array) => {
   // {features} targets just the features in the object
   let { features } = array;
@@ -83,19 +81,16 @@ const createMarkers = (array) => {
     let mag = earthquake.properties.mag;
     let magDot = '';
 
+    // Chooses Marker according to Magnitude Data
     let calc = ((quakes.magMax - quakes.magMin) / 6);
     if (mag >= quakes.magMin && mag < quakes.magMin + (calc * 1)) {
       magDot = '<span class=purple>O</span>';
-      // console.log(mag);
       image.url = 'images/earthquakeIcon-purple.svg'
     } else if (mag >= quakes.magMin + (calc * 1) && mag < quakes.magMin + (calc * 2)) {
       magDot = '<span class=blue>O</span>';
-      // console.log(mag);
-      // console.log(calc * 3);
       image.url = 'images/earthquakeIcon-blue.svg'
     } else if (mag >= quakes.magMin + (calc * 2) && mag < quakes.magMin + (calc * 3)) {
       magDot = '<span class=green>O</span>';
-      // console.log(mag);
       image.url = 'images/earthquakeIcon-green.svg'
     } else if (mag >= quakes.magMin + (calc * 3) && mag < quakes.magMin + (calc * 4)) {
       magDot = '<span class=yellow>O</span>';
@@ -109,12 +104,9 @@ const createMarkers = (array) => {
     }
 
     const place = earthquake.properties.place;
-
     const template = `<p>${mag} ${magDot} ${place}</span>, ${hoursAgo} hours ago</p>`;
     $('#info').append(template);
-
     const coords = earthquake.geometry.coordinates;
-    // console.log(coords);
     const latLng = new google.maps.LatLng(coords[1], coords[0]);
 
     /* I need to read the documentation on this. I think it's possible to get the markers to drop slowly, but I think I need to add the markers to an array, separate from the rest of this function */
@@ -128,6 +120,7 @@ const createMarkers = (array) => {
     //   }));
     // }, 400);
 
+    // Placing markers on the map
     const marker = new google.maps.Marker({
       position: latLng,
       map: map,
@@ -135,7 +128,6 @@ const createMarkers = (array) => {
       icon: image,
       zIndex: zIndexNum
     });
-    // console.log(zIndexNum);
     zIndexNum--
   });
 }
@@ -204,18 +196,16 @@ function quakeMonth() {
 /* --- After Making a successful Ajax Request ---*/
 const onSuccessWeek = response => {
   quakes.sortDate = response;
-  initMap();
+  createMap(quakes.sortDate);
   // quakes.sortMag = response;
-  magMaxMin();
   $('h1').text(`Earthquakes from the past week, from magnitude ${quakes.magMin} to ${quakes.magMax}:`);
   $('p').remove();
   createMarkers(quakes.sortDate);
 };
 const onSuccessMonth = response => {
   quakes.sortDate = response;
-  initMap();
+  createMap(quakes.sortDate);
   // quakes.sortMag = response;
-  magMaxMin();
   $('h1').text(`Major earthquakes from the past month:`);
   $('p').remove();
   createMarkers(quakes.sortDate);
