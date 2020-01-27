@@ -64,13 +64,13 @@ button {
   background-color: rgba(255, 138, 91, 1);
 }
 #magnitude {
-  background-color: rgba(234, 150, 165, 1);
+  background-color: rgba(37, 206, 209, 1);
 }
 #weekly {
-  background-color: rgba(187, 197, 170, 1);
+  background-color: rgba(234, 150, 165, 1);
 }
 #monthly {
-  background-color: rgba(37, 206, 209, 1);
+  background-color: rgb(150, 199, 139);
 }
 
 .leftCol {
