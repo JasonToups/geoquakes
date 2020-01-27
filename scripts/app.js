@@ -198,7 +198,7 @@ const onSuccessWeek = response => {
   quakes.sortDate = response;
   createMap(quakes.sortDate);
   // quakes.sortMag = response;
-  $('h1').text(`Earthquakes from the past week, from magnitude ${quakes.magMin} to ${quakes.magMax}:`);
+  $('h1').text(`Earthquakes from the past week, featuring magnitudes ${quakes.magMin} to ${quakes.magMax}:`);
   $('p').remove();
   createMarkers(quakes.sortDate);
 };
